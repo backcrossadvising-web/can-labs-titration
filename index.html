@@ -127,8 +127,8 @@
       <p class="tc-sub">Order of operations · single-variable escalation</p>
       <ol class="tc-steps">
         <li><b>Select patient category.</b> Experienced (converting from flower), Naïve, or Breakthrough / PRN.</li>
-        <li><b>Pick the Can Labs° product.</b> Total THC fills with the spec-nominal value.</li>
-        <li><b>Overwrite Total THC</b> with the measured value from the batch's Certificate of Analysis.</li>
+        <li><b>Pick the Can Labs° product.</b> Pharmaceutical Strength fills with the spec-nominal value.</li>
+        <li><b>Overwrite Pharmaceutical Strength</b> with the measured value from the batch's Certificate of Analysis.</li>
         <li><b>Read the Week-1 plan</b> with the patient; discuss tolerability and re-dose interval (≥ 45–60 min).</li>
       </ol>
     </div>
@@ -171,7 +171,7 @@
         <label class="tc-field" data-flower>
           <div class="tc-field__head">
             <span class="tc-field__label">Current flower Total THC</span>
-            <span class="tc-field__suffix">% w/w</span>
+            <span class="tc-field__suffix">% THC</span>
           </div>
           <div class="tc-field__control">
             <input class="tc-input tc-input--num" id="pctTHC" type="number" min="0" max="40" step="0.1" value="27" />
@@ -205,11 +205,11 @@
           <div class="tc-field__control">
             <select class="tc-input" id="product">
               <optgroup label="Naturals — inhaled, whole-spectrum">
-                <option value="roe" data-default-thc="572" data-spec="Spec 500–600 mg/g (50–60% w/w)" selected>Flower Powder R.O.E.</option>
-                <option value="tri" data-default-thc="550" data-spec="Spec 500–600 mg/g (50–60% w/w)">Flower Extract Tri Crumble</option>
+                <option value="roe" data-default-thc="572" data-spec="Spec 500–600 mg/g (50–60% THC)" selected>Flower Extract R.O.E.</option>
+                <option value="tri" data-default-thc="550" data-spec="Spec 500–600 mg/g (50–60% THC)">Flower Extract Tri Crumble</option>
               </optgroup>
               <optgroup label="Formulated — inhaled, defined profile">
-                <option value="fp40" data-default-thc="400" data-spec="Spec 340–460 mg/g (34–46% w/w)">Flower Powder 40:1</option>
+                <option value="fp40" data-default-thc="400" data-spec="Spec 340–460 mg/g (34–46% THC)">Flower Powder 40:1</option>
                 <option value="balanced" data-default-thc="300" data-spec="Spec 270–330 mg/g THC (1:1 THC:CBD)">Flower Extract Balanced (1:1 THC:CBD)</option>
                 <option value="liveresin" data-default-thc="" data-spec="No nominal — enter CoA value. Tier 2 — deferred.">Live Resin (Tier 2 — deferred)</option>
               </optgroup>
@@ -222,13 +222,13 @@
 
         <label class="tc-field">
           <div class="tc-field__head">
-            <span class="tc-field__label">Total THC from CoA</span>
+            <span class="tc-field__label">Pharmaceutical Strength from CoA</span>
             <span class="tc-field__suffix">mg / g</span>
           </div>
           <div class="tc-field__control">
             <input class="tc-input tc-input--num" id="thcMgPerG" type="number" min="100" max="999" step="1" value="572" />
           </div>
-          <div class="tc-field__hint" id="productSpec">Spec 500–600 mg/g (50–60% w/w)</div>
+          <div class="tc-field__hint" id="productSpec">Spec 500–600 mg/g (50–60% THC)</div>
         </label>
 
         <label class="tc-field">
@@ -243,9 +243,9 @@
       </div>
 
       <p class="tc-note">
-        <span class="tc-note__pin">N.B.</span> Picking a product fills in spec-nominal Total THC;
-        <i>overwrite it</i> with the measured value from the batch CoA. Batch-to-batch variation
-        within spec can shift the Week-1 plan by one rounding step.
+        <span class="tc-note__pin">N.B.</span> Picking a product fills in the spec-nominal
+        Pharmaceutical Strength; <i>overwrite it</i> with the measured value from the batch CoA.
+        Batch-to-batch variation within spec can shift the Week-1 plan by one rounding step.
       </p>
     </div>
   </section>
@@ -333,7 +333,7 @@
         </thead>
         <tbody id="refBody"></tbody>
       </table>
-      <p class="tc-table-caption" id="refCaption">Spec-nominal extract Total THC = 572 mg/g.</p>
+      <p class="tc-table-caption" id="refCaption">Spec-nominal extract Pharmaceutical Strength = 572 mg/g.</p>
     </div>
   </section>
 
@@ -556,7 +556,7 @@
         <td>${(target.week1Start * sessions).toFixed(3)} g</td>
       </tr>`;
     }).join('');
-    $('refCaption').innerHTML = `★ row closest to current input. Active product Total THC = <b>${params.thcMgPerG} mg/g</b>.`;
+    $('refCaption').innerHTML = `★ row closest to current input. Active product Pharmaceutical Strength = <b>${params.thcMgPerG} mg/g</b>.`;
   }
 
   function renderAll() {
