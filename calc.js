@@ -1,4 +1,4 @@
-// Cantourage Titration Calculator — math module
+// Can Labs Titration Calculator — math module
 // Source: Titration_and_Flower_to_Extract_Conversion_v1_1.xlsx
 // All doses in grams (extract or flower). All THC values in mg unless noted.
 
