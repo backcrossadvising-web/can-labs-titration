@@ -36,6 +36,50 @@
       margin-top: 14px;
     }
     .tc-print:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Review-triggers section follows the same gutter rhythm as the handoff sections. */
+    .tc-review {
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      gap: 24px;
+    }
+    .tc-review .tc-h3 {
+      font-family: var(--tc-sans);
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      margin: 26px 0 6px;
+      color: var(--ink);
+    }
+    .tc-review .tc-h3::before {
+      content: '✕';
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: 8px;
+    }
+    @media (max-width: 760px) {
+      .tc-review { grid-template-columns: 1fr; gap: 8px; }
+      .tc-review .tc-section-no { text-align: left; }
+    }
+
+    /* Discreet logomark in the title block. */
+    .tc-title { position: relative; }
+    .tc-logomark {
+      position: absolute;
+      top: 36px;
+      right: 0;
+      width: 96px;
+      height: auto;
+      opacity: 0.62;
+      color: var(--ink-2);
+    }
+    .tc-logomark svg { width: 100%; height: auto; display: block; }
+    .tc-logomark .lm-mark { fill: currentColor; }
+    .tc-logomark .lm-dot  { fill: var(--accent); }
+    @media (max-width: 760px) {
+      .tc-logomark { position: static; margin: 0 0 16px; width: 84px; }
+    }
+    @media print { .tc-logomark { opacity: 0.85; } }
     @media print { .tc-print, .no-print { display: none !important; } body { padding: 0; background: white; } .page { box-shadow: none; max-width: none; } }
   </style>
 </head>
@@ -51,6 +95,12 @@
   </header>
 
   <section class="tc-title">
+    <div class="tc-logomark" aria-label="Can Labs">
+      <svg viewBox="0 0 1920 454.6" xmlns="http://www.w3.org/2000/svg">
+        <path class="lm-mark" d="M1572.8,221.5c0-26.6,24.4-41.7,53.2-41.7s47.4,10.6,56.7,33.7l18.6-10.6c-12-27-39.4-44.3-75.4-44.3s-75.4,27.9-75.4,62.9c0,79.8,134.3,45.2,134.3,105.5s-26.2,41.7-57.2,41.7-57.2-15.1-65.2-39l-19.1,11.1c10.6,28.4,39.9,49.2,84.2,49.2s79.3-26.6,79.3-62.9c0-81.1-134.3-46.1-134.3-105.5M1392.4,368.6c-52.7,0-94-41.7-94-94.4s41.2-94.4,94-94.4,94,41.7,94,94.4-41.2,94.4-94,94.4M1393.7,158.5c-43,0-77.1,22.2-95.3,56.3V74.8h-22.2v310.3h22.2v-51.4c18.2,34.1,52.3,56.3,95.3,56.3,63.4,0,114.8-50.1,114.8-115.7s-51.4-115.7-114.8-115.7M1091.8,368.6c-52.7,0-94-41.7-94-94.4s41.2-94.4,94-94.4,93.5,41.7,93.5,94.4-40.8,94.4-93.5,94.4M1185.4,163.4v50.1c-18.6-33.2-52.7-55-95.3-55-62.9,0-114.8,50.1-114.8,115.7s51.9,115.7,114.8,115.7,76.7-21.7,95.3-55v50.1h22.6v-221.6h-22.6ZM899.9,385h22.2V61.5h-22.2v323.6ZM180.8,393.1c-33.7,0-61.8-11.2-84.3-33.7-22.5-22.5-33.7-50.3-33.7-83.4,0-33.1,11.2-60.9,33.7-83.4,22.5-22.5,50.6-33.7,84.3-33.7,21.9,0,41.8,5.2,59.7,15.5,17.9,10.4,31.7,24.3,41.5,41.7l-63,36.4c-8-14.5-20.9-21.7-38.6-21.7-12.4,0-22.8,4.2-31.1,12.6-8.3,8.4-12.4,19.3-12.4,32.6,0,13.3,4.1,24.2,12.4,32.6,8.3,8.4,18.6,12.6,31.1,12.6,18.3,0,31.2-7.4,38.6-22.2l63,36.4c-9.8,17.7-23.6,31.8-41.5,42.1-17.9,10.3-37.8,15.5-59.7,15.5ZM449.2,165.1h73.7v221.8h-73.7v-20.4c-15.1,17.7-36.1,26.6-63,26.6-29.6,0-54.4-11.2-74.3-33.5-20-22.3-29.9-50.2-29.9-83.6,0-33.4,10-61.3,29.9-83.6,20-22.3,44.7-33.5,74.3-33.5,26.9,0,47.9,8.9,63,26.6v-20.4ZM368.9,311.1c8.6,8.9,19.8,13.3,33.7,13.3,13.9,0,25.1-4.4,33.7-13.3,8.6-8.9,12.9-20.6,12.9-35.1,0-14.5-4.3-26.2-12.9-35.1-8.6-8.9-19.8-13.3-33.7-13.3-13.9,0-25.1,4.4-33.7,13.3-8.6,8.9-12.9,20.6-12.9,35.1,0,14.5,4.3,26.2,12.9,35.1ZM680,158.9c24,0,43.6,8.2,58.8,24.6,15.2,16.4,22.8,40,22.8,70.8v132.7h-73.7v-123.3c0-11.5-3-20.3-9.1-26.2-6.1-5.9-14.1-8.9-24.2-8.9-11.5,0-20.5,3.5-26.8,10.4-6.4,7-9.5,16.9-9.5,30v118h-73.7v-221.8h73.7v22.2c13.3-18.9,33.9-28.4,61.7-28.4Z"/>
+        <path class="lm-dot" d="M1763.9,153.6c0,12.8,10.3,23.1,23,23.1s23.2-10.4,23.2-23c0-12.7-10.5-23.2-23.2-23.2-12.7,0-23,10.4-23,23.2M1716.8,153.4c0-38,30.8-70.4,70.8-70.1,38.1.2,69.7,30.7,69.7,70.4,0,39.5-32,70.4-70.8,70.1-38.9-.3-69.8-31.9-69.7-70.4"/>
+      </svg>
+    </div>
     <div class="tc-eyebrow">CLINICAL DECISION SUPPORT</div>
     <h1 class="tc-h1">
       Titration<span class="tc-amp"> &amp; </span>Conversion<span class="tc-h1__sub"> Calculator</span>
@@ -229,9 +279,42 @@
 
   <hr class="tc-rule" />
 
+  <!-- Review triggers + red flags -->
+  <section class="tc-review">
+    <div class="tc-section-no">03</div>
+    <div class="tc-section-body">
+      <h2 class="tc-h2">Review triggers</h2>
+      <p class="tc-sub">Scheduled and trigger-based checkpoints · single-variable escalation</p>
+
+      <table class="tc-table">
+        <thead>
+          <tr>
+            <th>Review point</th>
+            <th>Assess</th>
+            <th>Action if criteria not met</th>
+          </tr>
+        </thead>
+        <tbody id="reviewBody"></tbody>
+      </table>
+
+      <h3 class="tc-h3">Red flags — immediate stop and urgent review</h3>
+      <table class="tc-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Detail</th>
+          </tr>
+        </thead>
+        <tbody id="redFlagBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <hr class="tc-rule" />
+
   <!-- Reference table -->
   <section class="tc-ref">
-    <div class="tc-section-no">03</div>
+    <div class="tc-section-no">04</div>
     <div class="tc-section-body">
       <h2 class="tc-h2">Reference · Week-1 starting dose</h2>
       <p class="tc-sub">Flower %THC across typical clinic load · for sense-checking only</p>
@@ -289,6 +372,8 @@
     breakthroughSchedule,
     referenceTable,
     ESCALATION_CRITERIA,
+    REVIEW_TRIGGERS,
+    RED_FLAGS,
   } from './calc.js';
 
   const $ = (id) => document.getElementById(id);
@@ -427,6 +512,15 @@
     $('criteriaList').innerHTML = ESCALATION_CRITERIA.map((c) => `<li>${c}</li>`).join('');
   }
 
+  function renderReviewTriggers() {
+    $('reviewBody').innerHTML = REVIEW_TRIGGERS.map((r) =>
+      `<tr><td>${r.point}</td><td>${r.assess}</td><td>${r.action}</td></tr>`
+    ).join('');
+    $('redFlagBody').innerHTML = RED_FLAGS.map((r) =>
+      `<tr><td>${r.category}</td><td>${r.detail}</td></tr>`
+    ).join('');
+  }
+
   function renderSummary() {
     const params = currentParams();
     const product = selectedProductName();
@@ -491,6 +585,7 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     renderCriteria();
+    renderReviewTriggers();
     renderAll();
 
     for (const id of ['pctTHC', 'mass', 'sessions', 'thcMgPerG', 'patientId', 'batchRef']) {
