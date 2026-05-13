@@ -1,0 +1,508 @@
+/* ═══════════════════════════════════════════════════════════════
+   Can Labs° · Titration Calculator
+   Visual stylesheet · option B "App-native"
+   ───────────────────────────────────────────────────────────────
+   Drop-in for Conductor / GitHub Pages prototype. Scope: the
+   .tc container (the calculator article). Everything below is
+   namespaced under .tc so it can coexist with Conductor chrome.
+
+   Cross-references the Can Labs° Master Dossier R.O.E. (V0.1)
+   for typography rhythm, mono metadata strips, hairline rules
+   and tabular numerics.
+
+   Fonts: Public Sans 300/400/500/600/700  +  JetBrains Mono
+   400/500. Load via:
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?
+       family=Public+Sans:wght@300;400;500;600;700&
+       family=JetBrains+Mono:wght@400;500&display=swap">
+   ─────────────────────────────────────────────────────────────── */
+
+
+/* ── 1. Tokens ─────────────────────────────────────────────────── */
+.tc {
+  /* Paper & ink */
+  --paper:   oklch(0.99 0.003 80);   /* page background */
+  --paper-2: oklch(0.965 0.005 80);  /* inset surfaces, strips, segmented bg */
+  --ink:     oklch(0.18 0.008 60);   /* primary text */
+  --ink-2:   oklch(0.38 0.008 60);   /* secondary text */
+  --ink-3:   oklch(0.55 0.008 60);   /* tertiary text, captions */
+
+  /* Lines */
+  --rule:    oklch(0.18 0.008 60);   /* solid 1px rule under table heads */
+  --hair:    oklch(0.86 0.005 60);   /* 1px hairlines for input borders */
+
+  /* Accent — ink blue. Used sparingly for: focus rings, plan card,
+     section numerals, Week-1 highlight, criteria check-marks. */
+  --accent:  oklch(0.42 0.10 245);
+  --hl-bg:   oklch(0.96 0.020 245);
+
+  /* Type stacks */
+  --tc-sans: "Public Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --tc-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular,
+             Menlo, Consolas, monospace;
+
+  /* Base body */
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--tc-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 28px 40px 32px;
+}
+
+.tc,
+.tc *,
+.tc *::before,
+.tc *::after { box-sizing: border-box; }
+
+
+/* ── 2. Masthead / footer strips ──────────────────────────────── */
+/* Mono metadata band echoing the dossier header.
+   Markup: <header class="tc-strip tc-strip--top"><span>…</span> …</header> */
+.tc-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 20px;
+  font-family: var(--tc-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  padding: 6px 10px;
+  border: 1px solid var(--hair);
+  background: var(--paper-2);
+}
+.tc-strip--top { border-bottom-width: 0; }
+.tc-strip--bot { margin-top: 28px; border-top-width: 0; }
+
+
+/* ── 3. Title block ───────────────────────────────────────────── */
+.tc-title { padding: 36px 0 24px; }
+
+.tc-eyebrow {
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.tc-h1 {
+  font-family: var(--tc-sans);
+  font-weight: 700;
+  font-size: 48px;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  margin: 0 0 14px;
+  text-wrap: balance;
+}
+.tc-h1__sub  { font-weight: 300; color: var(--ink-2); }
+.tc-amp      { font-weight: 200; color: var(--ink-3); }
+
+.tc-deck {
+  font-size: 15px;
+  line-height: 1.55;
+  margin: 0 0 16px;
+  max-width: 64ch;
+  color: var(--ink-2);
+}
+.tc-meta {
+  display: flex; gap: 16px;
+  font-family: var(--tc-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.tc-meta span { padding: 3px 8px; border: 1px solid var(--hair); }
+
+
+/* ── 4. Section rhythm ────────────────────────────────────────── */
+/* Each top-level section uses a 64px gutter for a mono section number.
+   Markup:
+     <section class="tc-howto">          (or .tc-inputs / .tc-plan / .tc-ref / .tc-disclaimer)
+       <div class="tc-section-no">01</div>
+       <div class="tc-section-body">…</div>
+     </section>                                                          */
+.tc-howto,
+.tc-inputs,
+.tc-plan,
+.tc-ref,
+.tc-disclaimer {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 24px;
+}
+.tc-section-no {
+  text-align: right;
+  font-family: var(--tc-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  padding-top: 8px;
+}
+.tc-section-body { min-width: 0; }
+
+.tc-rule {
+  border: none;
+  border-top: 1px dashed var(--hair);
+  margin: 22px 0;
+}
+
+.tc-h2 {
+  font-family: var(--tc-sans);
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.2;
+  margin: 0 0 6px;
+  letter-spacing: -0.012em;
+}
+.tc-sub {
+  font-size: 12px;
+  color: var(--ink-3);
+  margin: 0 0 18px;
+}
+
+
+/* ── 5. How-to-use numbered steps ─────────────────────────────── */
+/* Markup: <ol class="tc-steps"><li>…</li></ol> */
+.tc-steps {
+  margin: 0; padding: 0; list-style: none;
+  font-size: 13.5px;
+  line-height: 1.5;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 28px;
+  counter-reset: tcstep;
+}
+.tc-steps li {
+  counter-increment: tcstep;
+  padding-left: 26px;
+  position: relative;
+}
+.tc-steps li::before {
+  content: counter(tcstep);
+  position: absolute; left: 0; top: 0;
+  width: 18px; height: 18px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--tc-mono);
+  font-size: 10px;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 999px;
+}
+.tc-steps b { font-weight: 600; }
+
+
+/* ── 6. Form fields ───────────────────────────────────────────── */
+/* Markup:
+     <div class="tc-fields">
+       <label class="tc-field [tc-field--wide] [tc-field--disabled]">
+         <div class="tc-field__head">
+           <span class="tc-field__label">Label</span>
+           <span class="tc-field__suffix">mg/g</span>     (optional)
+         </div>
+         <div class="tc-field__control">
+           <input class="tc-input [tc-input--num] [tc-input--mono]" …>
+         </div>
+         <div class="tc-field__hint">Spec 500–600 mg/g</div>   (optional)
+       </label>
+       …
+     </div>                                                              */
+.tc-fields {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px 24px;
+}
+.tc-field        { display: flex; flex-direction: column; gap: 6px; }
+.tc-field--wide  { grid-column: 1 / -1; }
+.tc-field--disabled { opacity: 0.4; }
+
+.tc-field__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+.tc-field__label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+.tc-field__suffix {
+  font-family: var(--tc-mono);
+  font-size: 10px;
+  color: var(--ink-3);
+}
+.tc-field__hint {
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.tc-input {
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  border: 1px solid var(--hair);
+  background: var(--paper);
+  padding: 9px 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  font-family: var(--tc-sans);
+  outline: none;
+}
+.tc-input--num  { font-family: var(--tc-mono); font-feature-settings: "tnum"; }
+.tc-input--mono { font-family: var(--tc-mono); font-size: 13px; }
+.tc-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--hl-bg); }
+
+select.tc-input {
+  appearance: none;
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(45deg,  transparent 50%, var(--ink-2) 50%),
+    linear-gradient(135deg, var(--ink-2) 50%, transparent 50%);
+  background-position: right 12px center, right 8px center;
+  background-size: 4px 4px;
+  background-repeat: no-repeat;
+  padding-right: 28px;
+}
+
+
+/* ── 7. Segmented control (Patient category) ──────────────────── */
+/* Markup:
+     <div class="tc-seg" role="radiogroup">
+       <button class="tc-seg__btn is-on" role="radio" aria-checked="true">…</button>
+       <button class="tc-seg__btn"        role="radio" aria-checked="false">…</button>
+     </div>                                                              */
+.tc-seg {
+  display: flex; gap: 2px;
+  border: 1px solid var(--hair);
+  background: var(--paper-2);
+  border-radius: 4px;
+  padding: 2px;
+}
+.tc-seg__btn {
+  flex: 1;
+  font: inherit;
+  cursor: pointer;
+  padding: 7px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-2);
+  background: transparent;
+  border: none;
+  border-radius: 3px;
+}
+.tc-seg__btn.is-on {
+  color: var(--paper);
+  background: var(--ink);
+}
+
+
+/* ── 8. In-line note callout ──────────────────────────────────── */
+/* Markup: <p class="tc-note"><span class="tc-note__pin">N.B.</span> …</p> */
+.tc-note {
+  font-size: 12.5px;
+  line-height: 1.55;
+  margin: 18px 0 0;
+  color: var(--ink-2);
+  max-width: 70ch;
+  background: var(--paper-2);
+  border: 1px solid var(--hair);
+  padding: 10px 14px;
+  border-radius: 4px;
+}
+.tc-note__pin {
+  font-family: var(--tc-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-right: 6px;
+}
+
+
+/* ── 9. Week-1 plan card ──────────────────────────────────────── */
+/* Markup:
+     <div class="tc-plan-card">
+       <div class="tc-plan-row">
+         <div class="tc-stat [tc-stat--hl]">
+           <div class="tc-stat__label">…</div>
+           <div class="tc-stat__value">
+             <span class="tc-stat__num">0.05</span>
+             <span class="tc-stat__unit">g</span>
+           </div>
+           <div class="tc-stat__detail">…</div>
+         </div>
+         …
+       </div>
+       <table class="tc-table tc-table--plan">…</table>
+       <ul class="tc-criteria"><li>…</li></ul>
+       <div class="tc-criteria-caption">…</div>
+     </div>                                                              */
+.tc-plan-card {
+  background: var(--hl-bg);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  padding: 22px 24px 18px;
+  margin-top: 6px;
+}
+.tc-plan-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.tc-stat__label {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.tc-stat__value { display: flex; align-items: baseline; gap: 4px; }
+.tc-stat__num {
+  font-family: var(--tc-mono);
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--ink);
+  font-feature-settings: "tnum";
+}
+.tc-stat__unit {
+  font-family: var(--tc-mono);
+  font-size: 12px;
+  color: var(--ink-3);
+}
+.tc-stat__detail {
+  font-size: 11.5px;
+  color: var(--ink-2);
+  margin-top: 6px;
+}
+.tc-stat--hl .tc-stat__num { color: var(--accent); }
+
+
+/* ── 10. Tables (plan + reference) ────────────────────────────── */
+.tc-table { width: 100%; border-collapse: collapse; margin-top: 18px; }
+.tc-table th, .tc-table td { text-align: left; }
+.tc-table th {
+  font-family: var(--tc-mono);
+  font-size: 10px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  font-weight: 500;
+  border-bottom: 1px solid var(--rule);
+  padding: 6px 10px 6px 0;
+  background: var(--paper-2);
+}
+.tc-table th:first-child,
+.tc-table td:first-child { padding-left: 8px; }
+.tc-table td {
+  font-size: 13px;
+  color: var(--ink);
+  border-bottom: 1px solid var(--hair);
+  padding: 8px 10px 8px 0;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+.tc-table__hold td { color: var(--ink-3); }                /* "Hold" rows */
+.tc-table__hl td   { background: var(--hl-bg); }           /* highlighted row */
+.tc-table__hl td:first-child { color: var(--accent); font-weight: 600; }
+
+.tc-table-caption,
+.tc-criteria-caption {
+  font-size: 11.5px;
+  color: var(--ink-3);
+  margin-top: 8px;
+}
+
+
+/* ── 11. Criteria checklist ───────────────────────────────────── */
+/* Markup: <ul class="tc-criteria"><li>…</li>…</ul> */
+.tc-criteria {
+  margin: 16px 0 0; padding: 0; list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.tc-criteria li {
+  font-size: 11.5px;
+  color: var(--ink);
+  padding: 8px 10px 8px 26px;
+  background: var(--paper-2);
+  border: 1px solid var(--hair);
+  border-radius: 4px;
+  position: relative;
+}
+.tc-criteria li::before {
+  content: "✓";
+  position: absolute; left: 9px; top: 7px;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+
+/* ── 12. Disclaimer ───────────────────────────────────────────── */
+.tc-disclaimer p {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  margin: 0;
+  max-width: 80ch;
+  padding: 12px 14px;
+  border-left: 3px solid var(--accent);
+  background: var(--paper-2);
+}
+.tc-disclaimer .tc-section-no { color: var(--accent); }
+
+
+/* ── 13. Utility ──────────────────────────────────────────────── */
+.tc .mono { font-family: var(--tc-mono); font-size: 0.95em; }
+
+
+/* ── 14. Responsive ───────────────────────────────────────────── */
+@media (max-width: 760px) {
+  .tc { padding: 20px; }
+  .tc-howto, .tc-inputs, .tc-plan, .tc-ref, .tc-disclaimer {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .tc-section-no { text-align: left; }
+  .tc-fields,
+  .tc-steps,
+  .tc-plan-row,
+  .tc-criteria { grid-template-columns: 1fr 1fr; }
+  .tc-h1 { font-size: 36px; }
+  .tc-strip { flex-wrap: wrap; }
+  .tc-table { font-size: 12px; }
+}
+@media (max-width: 480px) {
+  .tc-fields,
+  .tc-steps,
+  .tc-plan-row,
+  .tc-criteria { grid-template-columns: 1fr; }
+}
+
+
+/* ── 15. Print ────────────────────────────────────────────────── */
+@media print {
+  .tc {
+    background: white;
+    padding: 0;
+    font-size: 11px;
+    color: #111;
+  }
+  .tc-strip   { background: white; border-color: #999; }
+  .tc-plan-card,
+  .tc-note,
+  .tc-criteria li,
+  .tc-disclaimer p { background: white; }
+  .tc-h1 { font-size: 32px; }
+  .tc-stat__num { font-size: 24px; }
+}

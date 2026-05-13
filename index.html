@@ -3,444 +3,513 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Can Labs Titration Calculator — Prototype</title>
-  <link rel="stylesheet" href="styles.css?v=2" />
+  <title>Can Labs° Titration & Conversion Calculator</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+
+  <link rel="stylesheet" href="titration-calculator.css" />
+
+  <style>
+    /* Page chrome only — not part of the handoff CSS. Matches reference.html. */
+    html, body { margin: 0; }
+    body { background: #ece9e0; padding: 32px 16px; font-family: "Public Sans", sans-serif; }
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: var(--paper, #fff);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 24px 60px -20px rgba(0,0,0,0.18);
+    }
+    .tc-print {
+      appearance: none;
+      cursor: pointer;
+      background: var(--paper);
+      color: var(--ink);
+      border: 1px solid var(--hair);
+      padding: 8px 14px;
+      font: 600 11px/1 var(--tc-mono);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      border-radius: 4px;
+      margin-top: 14px;
+    }
+    .tc-print:hover { border-color: var(--accent); color: var(--accent); }
+    @media print { .tc-print, .no-print { display: none !important; } body { padding: 0; background: white; } .page { box-shadow: none; max-width: none; } }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Can Labs Titration Calculator</h1>
-    <p class="subtitle">Flower → Extract conversion and titration schedules · Prototype v0.1 · derived from workbook v1.1</p>
+<div class="page">
+
+<article class="tc">
+
+  <header class="tc-strip tc-strip--top">
+    <span>ISSUE V 0.1 · MAY 2026</span>
+    <span>CAN LABS° · TITRATION CALCULATOR · № 02 / 04</span>
+    <span>FOR HCPS · SPECIALIST REGISTER</span>
   </header>
 
-  <main>
-    <section class="howto">
-      <h2>How to use this calculator</h2>
-      <p class="howto-lead">
-        A prescriber-facing tool for converting cannabis-experienced patients from inhaled
-        flower onto a Can Labs extract, and for anchoring Naïve and Breakthrough titration
-        plans. Walk through the steps in order — the page updates as you type.
-      </p>
+  <section class="tc-title">
+    <div class="tc-eyebrow">CLINICAL DECISION SUPPORT</div>
+    <h1 class="tc-h1">
+      Titration<span class="tc-amp"> &amp; </span>Conversion<span class="tc-h1__sub"> Calculator</span>
+    </h1>
+    <p class="tc-deck">
+      Flower-to-extract conversion and Week-1 anchors for Can Labs° solventless extracts.
+      Cross-references the Master Dossier — chapter 6.4 (Titration framework) and 6.5
+      (Flower-to-extract conversion).
+    </p>
+    <div class="tc-meta">
+      <span>PROTOTYPE V0.1</span>
+      <span>WORKBOOK V1.1</span>
+      <span>SCHEDULE 2 · REG 167 HMR 2012</span>
+    </div>
+  </section>
 
-      <div class="howto-col">
-        <ol>
-          <li><strong>Pick the patient category</strong> on the left:
-            <em>Experienced</em> (converting from inhaled flower), <em>Naïve</em>
-            (no recent cannabis), or <em>Breakthrough / PRN</em> (rescue dosing on top
-            of a stable baseline).</li>
-          <li><strong>Pick the Can Labs product</strong> you're prescribing. The
-            Total THC field fills in with the spec-nominal value.</li>
-          <li><strong>Overwrite the Total THC (mg/g)</strong> with the measured value
-            from the Certificate of Analysis for the specific batch the patient will
-            be dispensed. Type the batch reference into the box below it.</li>
-          <li><strong>Only if "Experienced":</strong> enter the patient's current
-            flower %THC, mass per session, and sessions per day.</li>
-          <li><strong>Read the Week-1 plan</strong> with the patient (highlighted in
-            pink): starting dose per session, sessions per day, and what that represents
-            as a percentage of their prior daily THC. Discuss tolerability expectations.</li>
-          <li><strong>Print the page</strong> for the patient and for the medical
-            record. The printout pins the product, batch reference, and date.</li>
-        </ol>
-      </div>
+  <hr class="tc-rule" />
 
-      <p class="howto-foot">
-        This is a decision-support tool — it does <strong>not</strong> set a maximum daily
-        dose. Clinical judgement, red-flag screening, and review triggers (see panels below)
-        govern every step.
-      </p>
-    </section>
+  <!-- How to use -->
+  <section class="tc-howto">
+    <div class="tc-section-no">00</div>
+    <div class="tc-section-body">
+      <h2 class="tc-h2">How to use</h2>
+      <p class="tc-sub">Order of operations · single-variable escalation</p>
+      <ol class="tc-steps">
+        <li><b>Select patient category.</b> Experienced (converting from flower), Naïve, or Breakthrough / PRN.</li>
+        <li><b>Pick the Can Labs° product.</b> Total THC fills with the spec-nominal value.</li>
+        <li><b>Overwrite Total THC</b> with the measured value from the batch's Certificate of Analysis.</li>
+        <li><b>Read the Week-1 plan</b> with the patient; discuss tolerability and re-dose interval (≥ 45–60 min).</li>
+      </ol>
+    </div>
+  </section>
 
-    <div class="layout">
-      <!-- LEFT: inputs + batch -->
-      <div>
-        <section class="card">
-          <h2>Patient inputs</h2>
-          <label for="patientId">Patient identifier / reference</label>
-          <input id="patientId" type="text" placeholder="e.g. anon-2026-0042" />
+  <hr class="tc-rule" />
 
-          <label for="category">Patient category</label>
-          <select id="category">
-            <option value="experienced">Cannabis-experienced (converting from flower)</option>
-            <option value="naive">Cannabis-naïve</option>
-            <option value="breakthrough">Breakthrough / PRN</option>
-          </select>
+  <!-- Patient & product -->
+  <section class="tc-inputs">
+    <div class="tc-section-no">01</div>
+    <div class="tc-section-body">
+      <h2 class="tc-h2">Patient &amp; product</h2>
+      <p class="tc-sub">Specimen-form inputs · all values batch-anchored</p>
 
-          <div id="flowerInputs">
-            <label for="pctTHC">Current flower Total THC (% w/w)</label>
-            <input id="pctTHC" type="number" min="0" max="40" step="0.1" value="27" />
+      <div class="tc-fields">
 
-            <div class="row">
-              <div>
-                <label for="mass">Mass per session (g)</label>
-                <input id="mass" type="number" min="0" max="2" step="0.025" value="0.10" />
-              </div>
-              <div>
-                <label for="sessions">Sessions per day</label>
-                <input id="sessions" type="number" min="1" max="8" step="1" value="3" />
-              </div>
+        <label class="tc-field">
+          <div class="tc-field__head">
+            <span class="tc-field__label">Patient identifier</span>
+          </div>
+          <div class="tc-field__control">
+            <input class="tc-input" id="patientId" placeholder="MRN or anonymised ref" />
+          </div>
+          <div class="tc-field__hint">MRN or anonymised reference</div>
+        </label>
+
+        <label class="tc-field tc-field--wide">
+          <div class="tc-field__head">
+            <span class="tc-field__label">Patient category</span>
+          </div>
+          <div class="tc-field__control">
+            <div class="tc-seg" role="radiogroup" id="category">
+              <button type="button" class="tc-seg__btn is-on" data-cat="experienced" role="radio" aria-checked="true">Experienced</button>
+              <button type="button" class="tc-seg__btn" data-cat="naive" role="radio" aria-checked="false">Naïve</button>
+              <button type="button" class="tc-seg__btn" data-cat="breakthrough" role="radio" aria-checked="false">Breakthrough / PRN</button>
             </div>
           </div>
-        </section>
+        </label>
 
-        <section class="card">
-          <h2>Can Labs product</h2>
-          <label for="product">Target product</label>
-          <select id="product">
-            <optgroup label="Naturals — inhaled, whole-spectrum">
-              <option value="roe" data-default-thc="550" data-spec="Spec 500–600 mg/g (50–60% w/w)">Flower Powder R.O.E.</option>
-              <option value="tri" data-default-thc="550" data-spec="Spec 500–600 mg/g (50–60% w/w)">Flower Extract Tri Crumble</option>
-            </optgroup>
-            <optgroup label="Formulated — inhaled, defined profile">
-              <option value="fp40" data-default-thc="400" data-spec="Spec 340–460 mg/g (34–46% w/w)">Flower Powder 40:1</option>
-              <option value="balanced" data-default-thc="300" data-spec="Spec 270–330 mg/g THC, ~270–330 mg/g CBD (1:1)">Flower Extract Balanced (1:1 THC:CBD)</option>
-              <option value="liveresin" data-default-thc="" data-spec="No nominal default — enter Total THC from CoA. Tier 2 — launch deferred.">Live Resin (Tier 2 — deferred)</option>
-            </optgroup>
-            <optgroup label="Oral — not applicable to this calculator">
-              <option value="" disabled>R.S.O. — oral dosing (drops, mL). Use a separate oral-conversion tool.</option>
-            </optgroup>
-          </select>
-
-          <label for="thcMgPerG">Total THC from this batch's CoA (mg/g)</label>
-          <input id="thcMgPerG" type="number" min="100" max="999" step="1" value="550" />
-          <p id="productSpec" class="spec-hint">Spec 500–600 mg/g (50–60% w/w)</p>
-
-          <label for="batchRef">Batch reference (optional, for the printout)</label>
-          <input id="batchRef" type="text" placeholder="e.g. CN2602CP070H" />
-
-          <p class="callout no-print">
-            <strong>Always use the batch's own CoA value.</strong> Picking a product fills in the
-            spec-nominal Total THC; <em>overwrite it</em> with the measured value from the
-            Certificate of Analysis for the specific batch the patient has been dispensed.
-            Batch-to-batch variation within spec can shift the Week-1 plan by one rounding step.
-          </p>
-        </section>
-
-        <div class="actions no-print">
-          <button class="primary" onclick="window.print()">Print / export PDF</button>
-          <button class="secondary" id="resetBtn">Reset</button>
-        </div>
-      </div>
-
-      <!-- RIGHT: outputs + schedule + reference -->
-      <div>
-        <section class="card outputs" id="outputsCard">
-          <h2>Calculated outputs (per session)</h2>
-          <dl id="outputs"></dl>
-          <p class="callout">
-            <strong>Clinical note:</strong> Week 1 targets ≈50% of the patient's prior daily THC
-            exposure as a conversion safety factor. Because the practical minimum per-session
-            extract dose (0.05 g) is denser than typical flower sessions, the calculator
-            <em>reduces sessions/day</em> rather than the per-dose mass to honour the safety factor.
-            Single-variable escalation only — never change two variables at once.
-          </p>
-        </section>
-
-        <section class="card">
-          <h2>Titration schedule</h2>
-          <div class="tabs" role="tablist">
-            <button id="tab-experienced" role="tab" aria-selected="true">Experienced (conversion)</button>
-            <button id="tab-naive" role="tab" aria-selected="false">Naïve</button>
-            <button id="tab-breakthrough" role="tab" aria-selected="false">Breakthrough / PRN</button>
+        <label class="tc-field" data-flower>
+          <div class="tc-field__head">
+            <span class="tc-field__label">Current flower Total THC</span>
+            <span class="tc-field__suffix">% w/w</span>
           </div>
-          <div id="scheduleTable"></div>
-          <details>
-            <summary>Escalation criteria — all four must be met</summary>
-            <ul id="escalationList"></ul>
-          </details>
-        </section>
+          <div class="tc-field__control">
+            <input class="tc-input tc-input--num" id="pctTHC" type="number" min="0" max="40" step="0.1" value="27" />
+          </div>
+        </label>
 
-        <section class="card">
-          <h2>Review triggers</h2>
-          <table>
-            <thead><tr><th>Review point</th><th>Assess</th><th>Action if not met</th></tr></thead>
-            <tbody id="reviewBody"></tbody>
-          </table>
-          <details>
-            <summary>Red flags — immediate stop and urgent review</summary>
-            <table>
-              <thead><tr><th>Category</th><th>Detail</th></tr></thead>
-              <tbody id="redFlagBody"></tbody>
-            </table>
-          </details>
-        </section>
+        <label class="tc-field" data-flower>
+          <div class="tc-field__head">
+            <span class="tc-field__label">Mass per session</span>
+            <span class="tc-field__suffix">g</span>
+          </div>
+          <div class="tc-field__control">
+            <input class="tc-input tc-input--num" id="mass" type="number" min="0" max="2" step="0.025" value="0.10" />
+          </div>
+        </label>
 
-        <section class="card no-print">
-          <h2>Reference table — week-1 starting dose</h2>
-          <label for="refPct">Show reference for flower %THC</label>
-          <select id="refPct">
-            <option value="20">20%</option>
-            <option value="22">22%</option>
-            <option value="25">25%</option>
-            <option value="27" selected>27% (Green Karat LM reference)</option>
-            <option value="30">30%</option>
-          </select>
-          <table>
-            <thead>
-              <tr>
-                <th>Mass / session (g)</th>
-                <th class="num">Loaded THC / session (mg)</th>
-                <th class="num">Daily flower @ 3× (g)</th>
-                <th class="num">Daily THC @ 3× (mg)</th>
-                <th class="num">Extract equiv / session (g)</th>
-                <th class="num">Week-1 start / session (g)</th>
-                <th class="num">Week-1 daily @ 3× (g)</th>
-              </tr>
-            </thead>
-            <tbody id="refBody"></tbody>
-          </table>
-        </section>
+        <label class="tc-field" data-flower>
+          <div class="tc-field__head">
+            <span class="tc-field__label">Sessions per day</span>
+            <span class="tc-field__suffix">× / day</span>
+          </div>
+          <div class="tc-field__control">
+            <input class="tc-input tc-input--num" id="sessions" type="number" min="1" max="8" step="1" value="3" />
+          </div>
+        </label>
 
-        <div class="disclaimer">
-          <p><strong>Plan generated for:</strong>
-            <span id="planSummary"></span></p>
-          <p><strong>Decision-support tool, not a prescribing instrument.</strong> Outputs are
-          flower-equivalent calculations to support specialist clinical judgement. No hard daily
-          ceiling is applied — escalation, downgrade, and stopping rules apply at every step.
-          Apply patient-specific contraindications, drug interactions, and red-flag screening
-          independently of this tool. Generated <span id="genDate"></span>.</p>
-        </div>
+        <label class="tc-field tc-field--wide">
+          <div class="tc-field__head">
+            <span class="tc-field__label">Target product</span>
+          </div>
+          <div class="tc-field__control">
+            <select class="tc-input" id="product">
+              <optgroup label="Naturals — inhaled, whole-spectrum">
+                <option value="roe" data-default-thc="572" data-spec="Spec 500–600 mg/g (50–60% w/w)" selected>Flower Powder R.O.E.</option>
+                <option value="tri" data-default-thc="550" data-spec="Spec 500–600 mg/g (50–60% w/w)">Flower Extract Tri Crumble</option>
+              </optgroup>
+              <optgroup label="Formulated — inhaled, defined profile">
+                <option value="fp40" data-default-thc="400" data-spec="Spec 340–460 mg/g (34–46% w/w)">Flower Powder 40:1</option>
+                <option value="balanced" data-default-thc="300" data-spec="Spec 270–330 mg/g THC (1:1 THC:CBD)">Flower Extract Balanced (1:1 THC:CBD)</option>
+                <option value="liveresin" data-default-thc="" data-spec="No nominal — enter CoA value. Tier 2 — deferred.">Live Resin (Tier 2 — deferred)</option>
+              </optgroup>
+              <optgroup label="Oral — not applicable to this calculator">
+                <option value="" disabled>R.S.O. — oral dosing (drops, mL)</option>
+              </optgroup>
+            </select>
+          </div>
+        </label>
+
+        <label class="tc-field">
+          <div class="tc-field__head">
+            <span class="tc-field__label">Total THC from CoA</span>
+            <span class="tc-field__suffix">mg / g</span>
+          </div>
+          <div class="tc-field__control">
+            <input class="tc-input tc-input--num" id="thcMgPerG" type="number" min="100" max="999" step="1" value="572" />
+          </div>
+          <div class="tc-field__hint" id="productSpec">Spec 500–600 mg/g (50–60% w/w)</div>
+        </label>
+
+        <label class="tc-field">
+          <div class="tc-field__head">
+            <span class="tc-field__label">Batch reference</span>
+          </div>
+          <div class="tc-field__control">
+            <input class="tc-input tc-input--mono" id="batchRef" placeholder="e.g. CN2602CP070H" />
+          </div>
+        </label>
+
       </div>
+
+      <p class="tc-note">
+        <span class="tc-note__pin">N.B.</span> Picking a product fills in spec-nominal Total THC;
+        <i>overwrite it</i> with the measured value from the batch CoA. Batch-to-batch variation
+        within spec can shift the Week-1 plan by one rounding step.
+      </p>
     </div>
-  </main>
+  </section>
 
-  <script type="module">
-    import {
-      DEFAULTS,
-      computeConversion,
-      experiencedSchedule,
-      naiveSchedule,
-      breakthroughSchedule,
-      referenceTable,
-      REVIEW_TRIGGERS,
-      RED_FLAGS,
-      ESCALATION_CRITERIA,
-    } from './calc.js';
+  <hr class="tc-rule" />
 
-    const $ = (id) => document.getElementById(id);
-    const fmtG = (v) => (v == null ? '—' : `${v.toFixed(3)} g`);
-    const fmtGshort = (v) => (v == null ? '—' : v.toFixed(3));
-    const fmtMg = (v) => (v == null ? '—' : `${v.toFixed(1)} mg`);
-    const fmtPct = (v) => (v == null ? '—' : `${(v * 100).toFixed(0)}%`);
+  <!-- Week-1 plan -->
+  <section class="tc-plan">
+    <div class="tc-section-no">02</div>
+    <div class="tc-section-body">
+      <h2 class="tc-h2" id="planTitle">Week-1 plan</h2>
+      <p class="tc-sub" id="planSummary">Plan generated for —</p>
 
-    function currentParams() {
-      const thcMgPerG = Number($('thcMgPerG').value) || DEFAULTS.thcMgPerG;
-      return { ...DEFAULTS, thcMgPerG };
-    }
+      <div class="tc-plan-card">
 
-    function selectedProductName() {
-      const opt = $('product').selectedOptions[0];
-      return opt ? opt.textContent.trim() : '';
-    }
+        <div class="tc-plan-row" id="planStats"></div>
 
-    function readInputs() {
-      return {
-        flowerPctTHC: Number($('pctTHC').value) || 0,
-        massPerSession: Number($('mass').value) || 0,
-        sessionsPerDay: Math.max(1, Math.floor(Number($('sessions').value) || 1)),
-      };
-    }
+        <table class="tc-table tc-table--plan">
+          <thead><tr id="scheduleHead"></tr></thead>
+          <tbody id="scheduleBody"></tbody>
+        </table>
 
-    function renderOutputs() {
-      const params = currentParams();
-      const inputs = readInputs();
-      const c = computeConversion(inputs, params);
-      const dl = $('outputs');
-      dl.innerHTML = `
-        <dt>Loaded THC per session</dt><dd>${fmtMg(c.loadedTHCperSession)}</dd>
-        <dt>Daily flower mass</dt><dd>${fmtG(c.dailyFlowerMass)}</dd>
-        <dt>Daily loaded THC</dt><dd>${fmtMg(c.dailyLoadedTHC)}</dd>
-        <dt>Extract equivalent / session (no safety)</dt><dd>${fmtG(c.extractEquivPerSession)}</dd>
-        <dt>Week-1 starting dose / session</dt><dd class="highlight">${fmtG(c.week1StartingDose)}</dd>
-        <dt>Week-1 sessions / day</dt><dd class="highlight">${c.week1Sessions}</dd>
-        <dt>Week-1 daily extract dose</dt><dd class="highlight">${fmtG(c.week1DailyDose)}</dd>
-        <dt>Week-1 daily loaded THC</dt><dd>${fmtMg(c.week1DailyTHC)}</dd>
-        <dt>% of prior daily THC, week 1</dt><dd>${fmtPct(c.pctOfPriorTHC)}</dd>
-      `;
-      return c;
-    }
+        <ul class="tc-criteria" id="criteriaList"></ul>
+        <div class="tc-criteria-caption">Escalation criteria — <b>all four</b> must be met before any single-variable step.</div>
 
-    function renderSchedule(activeTab) {
-      const params = currentParams();
-      const inputs = readInputs();
-      const c = computeConversion(inputs, params);
-      const host = $('scheduleTable');
-      let rows = '';
-      if (activeTab === 'experienced') {
-        const schedule = experiencedSchedule(inputs, c, params);
-        rows = `
-          <table>
-            <thead><tr>
-              <th>Week</th><th>Timing</th>
-              <th class="num">Per-dose (g)</th><th class="num">Doses/day</th>
-              <th class="num">Daily (g)</th><th class="num">% prior THC</th>
-              <th>Notes</th>
-            </tr></thead>
-            <tbody>
-              ${schedule.map(r => `
-                <tr>
-                  <td>${r.week}</td><td>${r.timing}</td>
-                  <td class="num">${fmtGshort(r.perDose)}</td>
-                  <td class="num">${r.doses ?? '—'}</td>
-                  <td class="num">${fmtGshort(r.daily)}</td>
-                  <td class="num">${r.pct == null ? '—' : fmtPct(r.pct)}</td>
-                  <td>${r.notes}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>`;
-      } else if (activeTab === 'naive') {
-        const schedule = naiveSchedule(params);
-        rows = `
-          <table>
-            <thead><tr>
-              <th>Week</th><th>Timing</th>
-              <th class="num">Per-dose (g)</th><th class="num">Doses/day</th>
-              <th class="num">Daily (g)</th><th class="num">Daily THC (mg)</th>
-              <th>Notes</th>
-            </tr></thead>
-            <tbody>
-              ${schedule.map(r => `
-                <tr>
-                  <td>${r.week}</td><td>${r.timing}</td>
-                  <td class="num">${fmtGshort(r.perDose)}</td>
-                  <td class="num">${r.doses ?? '—'}</td>
-                  <td class="num">${fmtGshort(r.daily)}</td>
-                  <td class="num">${r.dailyTHC == null ? '—' : r.dailyTHC.toFixed(1)}</td>
-                  <td>${r.notes}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>`;
-      } else {
-        const schedule = breakthroughSchedule();
-        rows = `
-          <table>
-            <thead><tr>
-              <th>Phase</th><th>Setting</th>
-              <th class="num">Per-rescue (g)</th><th class="num">Min interval (min)</th>
-              <th class="num">Max rescues/day</th><th class="num">Max daily (g)</th>
-              <th>Notes</th>
-            </tr></thead>
-            <tbody>
-              ${schedule.map(r => `
-                <tr>
-                  <td>${r.phase}</td><td>${r.setting}</td>
-                  <td class="num">${r.perRescue.toFixed(3)}</td>
-                  <td class="num">${r.minIntervalMin}</td>
-                  <td class="num">${r.maxRescues}</td>
-                  <td class="num">${r.maxDaily.toFixed(3)}</td>
-                  <td>${r.notes}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>`;
-      }
-      host.innerHTML = rows;
-    }
+      </div>
 
-    function renderReference() {
-      const pct = Number($('refPct').value);
-      const params = currentParams();
+      <button class="tc-print no-print" onclick="window.print()">Print plan</button>
+    </div>
+  </section>
+
+  <hr class="tc-rule" />
+
+  <!-- Reference table -->
+  <section class="tc-ref">
+    <div class="tc-section-no">03</div>
+    <div class="tc-section-body">
+      <h2 class="tc-h2">Reference · Week-1 starting dose</h2>
+      <p class="tc-sub">Flower %THC across typical clinic load · for sense-checking only</p>
+
+      <table class="tc-table tc-table--ref">
+        <thead>
+          <tr>
+            <th>Flower %THC</th>
+            <th>Mass / session</th>
+            <th>Daily flower @ 3×</th>
+            <th>Daily THC</th>
+            <th>Extract equiv / session</th>
+            <th>Week-1 start / session</th>
+            <th>Week-1 daily @ 3×</th>
+          </tr>
+        </thead>
+        <tbody id="refBody"></tbody>
+      </table>
+      <p class="tc-table-caption" id="refCaption">Spec-nominal extract Total THC = 572 mg/g.</p>
+    </div>
+  </section>
+
+  <hr class="tc-rule" />
+
+  <!-- Disclaimer -->
+  <section class="tc-disclaimer">
+    <div class="tc-section-no">▣</div>
+    <div class="tc-section-body">
+      <p>
+        <b>Decision-support tool, not a prescribing instrument.</b> Outputs are
+        flower-equivalent calculations to support specialist clinical judgement. No hard
+        daily ceiling is applied — escalation, downgrade, and stopping rules apply at every
+        step. Apply patient-specific contraindications, drug interactions, and red-flag
+        screening independently of this tool.
+      </p>
+    </div>
+  </section>
+
+  <footer class="tc-strip tc-strip--bot">
+    <span>CAN LABS° · DISTRIBUTED IN THE U.K. BY CANTOURAGE U.K.</span>
+    <span>Page 02 / 04</span>
+    <span>TITRATION CALC · V 0.1</span>
+  </footer>
+
+</article>
+
+</div>
+
+<script type="module">
+  import {
+    DEFAULTS,
+    computeConversion,
+    experiencedSchedule,
+    naiveSchedule,
+    breakthroughSchedule,
+    referenceTable,
+    ESCALATION_CRITERIA,
+  } from './calc.js';
+
+  const $ = (id) => document.getElementById(id);
+  const fmtG = (v) => (v == null ? '—' : v.toFixed(3));
+  const fmtMg = (v) => (v == null ? '—' : v.toFixed(1));
+  const fmtPct = (v) => (v == null ? '—' : `${(v * 100).toFixed(0)}`);
+
+  let activeCategory = 'experienced';
+
+  function currentParams() {
+    const thc = Number($('thcMgPerG').value) || DEFAULTS.thcMgPerG;
+    return { ...DEFAULTS, thcMgPerG: thc };
+  }
+  function readInputs() {
+    return {
+      flowerPctTHC: Number($('pctTHC').value) || 0,
+      massPerSession: Number($('mass').value) || 0,
+      sessionsPerDay: Math.max(1, Math.floor(Number($('sessions').value) || 1)),
+    };
+  }
+  function selectedProductName() {
+    const opt = $('product').selectedOptions[0];
+    return opt ? opt.textContent.trim() : '—';
+  }
+
+  function statTile({ label, num, unit, detail, hl }) {
+    return `
+      <div class="tc-stat ${hl ? 'tc-stat--hl' : ''}">
+        <div class="tc-stat__label">${label}</div>
+        <div class="tc-stat__value">
+          <span class="tc-stat__num">${num}</span>
+          ${unit ? `<span class="tc-stat__unit">${unit}</span>` : ''}
+        </div>
+        ${detail ? `<div class="tc-stat__detail">${detail}</div>` : ''}
+      </div>`;
+  }
+
+  function renderExperienced() {
+    const params = currentParams();
+    const inputs = readInputs();
+    const c = computeConversion(inputs, params);
+    const sched = experiencedSchedule(inputs, c, params);
+
+    $('planTitle').textContent = 'Week-1 plan';
+    $('planStats').innerHTML = [
+      statTile({ label: 'Start dose / session', num: fmtG(c.week1StartingDose), unit: 'g', detail: `@ ${params.thcMgPerG} mg/g` }),
+      statTile({ label: 'Sessions / day', num: c.week1Sessions, detail: 're-dose ≥ 45–60 min' }),
+      statTile({ label: 'Week-1 daily', num: fmtG(c.week1DailyDose), unit: 'g', detail: `≈ ${fmtMg(c.week1DailyTHC)} mg THC` }),
+      statTile({ label: '% of prior daily THC', num: fmtPct(c.pctOfPriorTHC), unit: '%', detail: 'target ≈ 50% safety factor', hl: true }),
+    ].join('');
+
+    $('scheduleHead').innerHTML = `
+      <th>Week</th>
+      <th>Per dose</th>
+      <th>Doses / day</th>
+      <th>Daily total</th>
+      <th>% prior THC</th>
+      <th>Notes</th>`;
+    $('scheduleBody').innerHTML = sched.map((r) => {
+      const isHold = r.perDose === null;
+      return `<tr class="${isHold ? 'tc-table__hold' : ''}">
+        <td>${r.week}</td>
+        <td>${r.perDose === null ? '—' : `${fmtG(r.perDose)} g`}</td>
+        <td>${r.doses ?? '—'}</td>
+        <td>${r.daily === null ? '—' : `${fmtG(r.daily)} g`}</td>
+        <td>${r.pct == null ? '—' : `${fmtPct(r.pct)}%`}</td>
+        <td>${r.notes}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  function renderNaive() {
+    const params = currentParams();
+    const sched = naiveSchedule(params);
+
+    $('planTitle').textContent = 'Naïve titration plan';
+    const wk1 = sched[0];
+    $('planStats').innerHTML = [
+      statTile({ label: 'Week-1 dose', num: fmtG(wk1.perDose), unit: 'g', detail: 'evening only' }),
+      statTile({ label: 'Sessions / day', num: wk1.doses, detail: 'single evening dose' }),
+      statTile({ label: 'Week-1 daily', num: fmtG(wk1.daily), unit: 'g', detail: `≈ ${fmtMg(wk1.dailyTHC)} mg THC`, hl: true }),
+      statTile({ label: 'Driving cut-off', num: '6', unit: 'h', detail: 'after each dose' }),
+    ].join('');
+
+    $('scheduleHead').innerHTML = `
+      <th>Week</th>
+      <th>Timing</th>
+      <th>Per dose</th>
+      <th>Doses / day</th>
+      <th>Daily total</th>
+      <th>Notes</th>`;
+    $('scheduleBody').innerHTML = sched.map((r) => {
+      const isHold = r.perDose === null;
+      return `<tr class="${isHold ? 'tc-table__hold' : ''}">
+        <td>${r.week}</td>
+        <td>${r.timing}</td>
+        <td>${r.perDose === null ? '—' : `${fmtG(r.perDose)} g`}</td>
+        <td>${r.doses ?? '—'}</td>
+        <td>${r.daily === null ? '—' : `${fmtG(r.daily)} g`}</td>
+        <td>${r.notes}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  function renderBreakthrough() {
+    const sched = breakthroughSchedule();
+    const phase1 = sched[0];
+
+    $('planTitle').textContent = 'Breakthrough / PRN plan';
+    $('planStats').innerHTML = [
+      statTile({ label: 'Per rescue', num: fmtG(phase1.perRescue), unit: 'g', detail: phase1.phase }),
+      statTile({ label: 'Min interval', num: phase1.minIntervalMin, unit: 'min', detail: 'between rescues' }),
+      statTile({ label: 'Max rescues', num: phase1.maxRescues, unit: '/ day', detail: 'log every rescue' }),
+      statTile({ label: 'Max daily', num: fmtG(phase1.maxDaily), unit: 'g', detail: 'PRN ceiling', hl: true }),
+    ].join('');
+
+    $('scheduleHead').innerHTML = `
+      <th>Phase</th>
+      <th>Setting</th>
+      <th>Per rescue</th>
+      <th>Min interval</th>
+      <th>Max rescues</th>
+      <th>Max daily</th>`;
+    $('scheduleBody').innerHTML = sched.map((r) => `
+      <tr>
+        <td>${r.phase}</td>
+        <td>${r.setting}</td>
+        <td>${fmtG(r.perRescue)} g</td>
+        <td>${r.minIntervalMin} min</td>
+        <td>${r.maxRescues}</td>
+        <td>${fmtG(r.maxDaily)} g</td>
+      </tr>`).join('');
+  }
+
+  function renderCriteria() {
+    $('criteriaList').innerHTML = ESCALATION_CRITERIA.map((c) => `<li>${c}</li>`).join('');
+  }
+
+  function renderSummary() {
+    const params = currentParams();
+    const product = selectedProductName();
+    const batch = $('batchRef').value.trim() || 'batch ref not recorded';
+    const pid = $('patientId').value.trim() || '—';
+    const date = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
+    $('planSummary').innerHTML =
+      `Plan generated for <b>${pid}</b> · ${product} · ${params.thcMgPerG} mg/g · <span class="mono">${batch}</span> · ${date}`;
+  }
+
+  function renderReference() {
+    const params = currentParams();
+    const inputs = readInputs();
+    const pcts = [20, 22, 25, 27, 30];
+    const mass = inputs.massPerSession || 0.10;
+    const sessions = inputs.sessionsPerDay || 3;
+    const userPct = inputs.flowerPctTHC || 0;
+    const closestPct = pcts.reduce((a, b) => (Math.abs(b - userPct) < Math.abs(a - userPct) ? b : a));
+
+    $('refBody').innerHTML = pcts.map((pct) => {
       const rows = referenceTable(pct, params);
-      $('refBody').innerHTML = rows.map(r => `
-        <tr>
-          <td class="num">${r.mass.toFixed(2)}</td>
-          <td class="num">${r.loadedTHC.toFixed(1)}</td>
-          <td class="num">${r.dailyFlower3x.toFixed(2)}</td>
-          <td class="num">${r.dailyTHC3x.toFixed(1)}</td>
-          <td class="num">${r.extractEquiv.toFixed(3)}</td>
-          <td class="num">${r.week1Start.toFixed(3)}</td>
-          <td class="num">${r.week1Daily3x.toFixed(3)}</td>
-        </tr>
-      `).join('');
+      const target = rows.find((r) => Math.abs(r.mass - mass) < 0.001) || rows[1];
+      const isHl = pct === closestPct;
+      const dailyFlower = (mass * sessions).toFixed(2);
+      const dailyTHC = (target.loadedTHC * sessions).toFixed(0);
+      const star = isHl ? ' ★' : '';
+      return `<tr class="${isHl ? 'tc-table__hl' : ''}">
+        <td>${pct}%${star}</td>
+        <td>${mass.toFixed(2)} g</td>
+        <td>${dailyFlower} g</td>
+        <td>${dailyTHC} mg</td>
+        <td>${target.extractEquiv.toFixed(3)} g</td>
+        <td>${target.week1Start.toFixed(3)} g</td>
+        <td>${(target.week1Start * sessions).toFixed(3)} g</td>
+      </tr>`;
+    }).join('');
+    $('refCaption').innerHTML = `★ row closest to current input. Active product Total THC = <b>${params.thcMgPerG} mg/g</b>.`;
+  }
+
+  function renderAll() {
+    if (activeCategory === 'experienced') renderExperienced();
+    else if (activeCategory === 'naive') renderNaive();
+    else renderBreakthrough();
+    renderSummary();
+    renderReference();
+  }
+
+  function setCategory(cat) {
+    activeCategory = cat;
+    for (const btn of $('category').querySelectorAll('.tc-seg__btn')) {
+      const on = btn.dataset.cat === cat;
+      btn.classList.toggle('is-on', on);
+      btn.setAttribute('aria-checked', on ? 'true' : 'false');
     }
-
-    function renderStatic() {
-      $('reviewBody').innerHTML = REVIEW_TRIGGERS.map(r =>
-        `<tr><td>${r.point}</td><td>${r.assess}</td><td>${r.action}</td></tr>`
-      ).join('');
-      $('redFlagBody').innerHTML = RED_FLAGS.map(r =>
-        `<tr><td>${r.category}</td><td>${r.detail}</td></tr>`
-      ).join('');
-      $('escalationList').innerHTML = ESCALATION_CRITERIA.map(c => `<li>${c}</li>`).join('');
-      $('genDate').textContent = new Date().toLocaleDateString('en-GB', {
-        day: '2-digit', month: 'short', year: 'numeric',
-      });
+    for (const el of document.querySelectorAll('[data-flower]')) {
+      el.classList.toggle('tc-field--disabled', cat !== 'experienced');
+      const input = el.querySelector('input, select');
+      if (input) input.disabled = cat !== 'experienced';
     }
+    renderAll();
+  }
 
-    let activeTab = 'experienced';
+  document.addEventListener('DOMContentLoaded', () => {
+    renderCriteria();
+    renderAll();
 
-    function setTab(tab) {
-      activeTab = tab;
-      for (const t of ['experienced', 'naive', 'breakthrough']) {
-        $(`tab-${t}`).setAttribute('aria-selected', t === tab ? 'true' : 'false');
-      }
-      const flowerNeeded = tab !== 'naive';
-      $('flowerInputs').style.display = flowerNeeded ? '' : 'none';
-      $('outputsCard').style.display = tab === 'experienced' ? '' : 'none';
-      renderSchedule(tab);
+    for (const id of ['pctTHC', 'mass', 'sessions', 'thcMgPerG', 'patientId', 'batchRef']) {
+      $(id).addEventListener('input', renderAll);
     }
-
-    function renderPlanSummary() {
-      const params = currentParams();
-      const product = selectedProductName() || '—';
-      const batch = $('batchRef').value.trim();
-      const pid = $('patientId').value.trim();
-      const parts = [
-        pid ? `Patient ${pid}` : 'Patient (unspecified)',
-        `Product: ${product}`,
-        `Total THC: ${params.thcMgPerG} mg/g`,
-        batch ? `Batch: ${batch}` : 'Batch: (not recorded)',
-      ];
-      $('planSummary').textContent = parts.join(' · ');
-    }
-
-    function refreshAll() {
-      renderOutputs();
-      renderSchedule(activeTab);
-      renderReference();
-      renderPlanSummary();
-    }
-
-    // Wire up
-    document.addEventListener('DOMContentLoaded', () => {
-      renderStatic();
-      refreshAll();
-
-      for (const id of ['pctTHC', 'mass', 'sessions', 'thcMgPerG', 'patientId']) {
-        $(id).addEventListener('input', refreshAll);
-      }
-      $('refPct').addEventListener('change', renderReference);
-      $('product').addEventListener('change', () => {
-        const opt = $('product').selectedOptions[0];
-        const def = opt?.dataset.defaultThc ?? '';
-        const spec = opt?.dataset.spec ?? '';
-        if (def !== '') $('thcMgPerG').value = def;
-        else $('thcMgPerG').value = '';
-        $('productSpec').textContent = spec;
-        refreshAll();
-      });
-      $('batchRef').addEventListener('input', refreshAll);
-      $('category').addEventListener('change', () => {
-        const v = $('category').value;
-        setTab(v === 'experienced' ? 'experienced' : v === 'naive' ? 'naive' : 'breakthrough');
-      });
-      $('tab-experienced').addEventListener('click', () => setTab('experienced'));
-      $('tab-naive').addEventListener('click', () => setTab('naive'));
-      $('tab-breakthrough').addEventListener('click', () => setTab('breakthrough'));
-      $('resetBtn').addEventListener('click', () => {
-        $('pctTHC').value = 27;
-        $('mass').value = 0.10;
-        $('sessions').value = 3;
-        $('patientId').value = '';
-        $('product').value = 'roe';
-        $('thcMgPerG').value = 550;
-        $('productSpec').textContent = 'Spec 500–600 mg/g (50–60% w/w)';
-        $('batchRef').value = '';
-        $('category').value = 'experienced';
-        setTab('experienced');
-        refreshAll();
-      });
+    $('product').addEventListener('change', () => {
+      const opt = $('product').selectedOptions[0];
+      const def = opt?.dataset.defaultThc ?? '';
+      const spec = opt?.dataset.spec ?? '';
+      if (def !== '') $('thcMgPerG').value = def;
+      else $('thcMgPerG').value = '';
+      $('productSpec').textContent = spec;
+      renderAll();
     });
-  </script>
+    for (const btn of $('category').querySelectorAll('.tc-seg__btn')) {
+      btn.addEventListener('click', () => setCategory(btn.dataset.cat));
+    }
+  });
+</script>
+
 </body>
 </html>
