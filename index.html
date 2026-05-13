@@ -76,10 +76,27 @@
     .tc-logomark svg { width: 100%; height: auto; display: block; }
     .tc-logomark .lm-mark { fill: currentColor; }
     .tc-logomark .lm-dot  { fill: var(--accent); }
-    @media (max-width: 760px) {
-      .tc-logomark { position: static; margin: 0 0 16px; width: 84px; }
+
+    /* Sister mark — phant medical — sits below the Can Labs wordmark
+       at the same right-aligned column. PNG used as a mask so it picks up
+       currentColor, matching the Can Labs SVG treatment. */
+    .tc-phantmark {
+      position: absolute;
+      top: 124px;
+      right: 0;
+      width: 64px;
+      aspect-ratio: 1510 / 485;
+      opacity: 0.55;
+      color: var(--ink-2);
+      background-color: currentColor;
+      -webkit-mask: url('phant-mark.png') center / contain no-repeat;
+              mask: url('phant-mark.png') center / contain no-repeat;
     }
-    @media print { .tc-logomark { opacity: 0.85; } }
+    @media (max-width: 760px) {
+      .tc-logomark { position: static; margin: 0 0 8px; width: 84px; }
+      .tc-phantmark { position: static; margin: 0 0 16px; width: 56px; }
+    }
+    @media print { .tc-logomark, .tc-phantmark { opacity: 0.85; } }
     @media print { .tc-print, .no-print { display: none !important; } body { padding: 0; background: white; } .page { box-shadow: none; max-width: none; } }
   </style>
 </head>
@@ -101,6 +118,7 @@
         <path class="lm-dot" d="M1763.9,153.6c0,12.8,10.3,23.1,23,23.1s23.2-10.4,23.2-23c0-12.7-10.5-23.2-23.2-23.2-12.7,0-23,10.4-23,23.2M1716.8,153.4c0-38,30.8-70.4,70.8-70.1,38.1.2,69.7,30.7,69.7,70.4,0,39.5-32,70.4-70.8,70.1-38.9-.3-69.8-31.9-69.7-70.4"/>
       </svg>
     </div>
+    <div class="tc-phantmark" role="img" aria-label="phant medical"></div>
     <div class="tc-eyebrow">CLINICAL DECISION SUPPORT</div>
     <h1 class="tc-h1">
       Titration<span class="tc-amp"> &amp; </span>Conversion<span class="tc-h1__sub"> Calculator</span>
@@ -209,7 +227,7 @@
                 <option value="tri" data-default-thc="550" data-spec="Spec 500–600 mg/g (50–60% THC)">Flower Extract Tri Crumble</option>
               </optgroup>
               <optgroup label="Formulated — inhaled, defined profile">
-                <option value="fp40" data-default-thc="400" data-spec="Spec 340–460 mg/g (34–46% THC)">Flower Powder 40:1</option>
+                <option value="fp40" data-default-thc="400" data-spec="Spec 340–460 mg/g (34–46% THC)">Flower Extract 40:1</option>
                 <option value="balanced" data-default-thc="300" data-spec="Spec 270–330 mg/g THC (1:1 THC:CBD)">Flower Extract Balanced (1:1 THC:CBD)</option>
                 <option value="liveresin" data-default-thc="" data-spec="No nominal — enter CoA value. Tier 2 — deferred.">Live Resin (Tier 2 — deferred)</option>
               </optgroup>
