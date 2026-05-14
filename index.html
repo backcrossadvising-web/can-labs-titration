@@ -180,7 +180,6 @@
           <div class="tc-field__control">
             <div class="tc-seg" role="radiogroup" id="category">
               <button type="button" class="tc-seg__btn is-on" data-cat="experienced" role="radio" aria-checked="true">Experienced</button>
-              <button type="button" class="tc-seg__btn" data-cat="naive" role="radio" aria-checked="false">Naïve</button>
               <button type="button" class="tc-seg__btn" data-cat="breakthrough" role="radio" aria-checked="false">Breakthrough / PRN</button>
             </div>
           </div>
@@ -288,6 +287,7 @@
 
         <ul class="tc-criteria" id="criteriaList"></ul>
         <div class="tc-criteria-caption">Escalation criteria — <b>all four</b> must be met before any single-variable step.</div>
+        <div class="tc-criteria-caption">All plans are capped at <b>0.30 g / day</b> in line with the 10 g / month maximum prescription. An asterisk (*) marks any week whose daily total is capped.</div>
 
       </div>
 
@@ -385,7 +385,6 @@
     DEFAULTS,
     computeConversion,
     experiencedSchedule,
-    naiveSchedule,
     breakthroughSchedule,
     referenceTable,
     ESCALATION_CRITERIA,
@@ -435,10 +434,11 @@
     const sched = experiencedSchedule(inputs, c, params);
 
     $('planTitle').textContent = 'Week-1 plan';
+    const dailyStar = c.week1DailyCapped ? '*' : '';
     $('planStats').innerHTML = [
       statTile({ label: 'Start dose / session', num: fmtG(c.week1StartingDose), unit: 'g', detail: `@ ${params.thcMgPerG} mg/g` }),
       statTile({ label: 'Sessions / day', num: c.week1Sessions, detail: 're-dose ≥ 45–60 min' }),
-      statTile({ label: 'Week-1 daily', num: fmtG(c.week1DailyDose), unit: 'g', detail: `≈ ${fmtMg(c.week1DailyTHC)} mg THC` }),
+      statTile({ label: 'Week-1 daily', num: `${fmtG(c.week1DailyDose)}${dailyStar}`, unit: 'g', detail: c.week1DailyCapped ? 'capped · 0.30 g / day max' : `≈ ${fmtMg(c.week1DailyTHC)} mg THC` }),
       statTile({ label: '% of prior daily THC', num: fmtPct(c.pctOfPriorTHC), unit: '%', detail: 'target ≈ 50% safety factor', hl: true }),
     ].join('');
 
@@ -451,45 +451,13 @@
       <th>Notes</th>`;
     $('scheduleBody').innerHTML = sched.map((r) => {
       const isHold = r.perDose === null;
+      const star = r.capped ? '*' : '';
       return `<tr class="${isHold ? 'tc-table__hold' : ''}">
         <td>${r.week}</td>
         <td>${r.perDose === null ? '—' : `${fmtG(r.perDose)} g`}</td>
         <td>${r.doses ?? '—'}</td>
-        <td>${r.daily === null ? '—' : `${fmtG(r.daily)} g`}</td>
+        <td>${r.daily === null ? '—' : `${fmtG(r.daily)} g${star}`}</td>
         <td>${r.pct == null ? '—' : `${fmtPct(r.pct)}%`}</td>
-        <td>${r.notes}</td>
-      </tr>`;
-    }).join('');
-  }
-
-  function renderNaive() {
-    const params = currentParams();
-    const sched = naiveSchedule(params);
-
-    $('planTitle').textContent = 'Naïve titration plan';
-    const wk1 = sched[0];
-    $('planStats').innerHTML = [
-      statTile({ label: 'Week-1 dose', num: fmtG(wk1.perDose), unit: 'g', detail: 'evening only' }),
-      statTile({ label: 'Sessions / day', num: wk1.doses, detail: 'single evening dose' }),
-      statTile({ label: 'Week-1 daily', num: fmtG(wk1.daily), unit: 'g', detail: `≈ ${fmtMg(wk1.dailyTHC)} mg THC`, hl: true }),
-      statTile({ label: 'Driving cut-off', num: '6', unit: 'h', detail: 'after each dose' }),
-    ].join('');
-
-    $('scheduleHead').innerHTML = `
-      <th>Week</th>
-      <th>Timing</th>
-      <th>Per dose</th>
-      <th>Doses / day</th>
-      <th>Daily total</th>
-      <th>Notes</th>`;
-    $('scheduleBody').innerHTML = sched.map((r) => {
-      const isHold = r.perDose === null;
-      return `<tr class="${isHold ? 'tc-table__hold' : ''}">
-        <td>${r.week}</td>
-        <td>${r.timing}</td>
-        <td>${r.perDose === null ? '—' : `${fmtG(r.perDose)} g`}</td>
-        <td>${r.doses ?? '—'}</td>
-        <td>${r.daily === null ? '—' : `${fmtG(r.daily)} g`}</td>
         <td>${r.notes}</td>
       </tr>`;
     }).join('');
@@ -564,6 +532,9 @@
       const dailyFlower = (mass * sessions).toFixed(2);
       const dailyTHC = (target.loadedTHC * sessions).toFixed(0);
       const star = isHl ? ' ★' : '';
+      const uncappedDaily = target.week1Start * sessions;
+      const cappedDaily = Math.min(uncappedDaily, params.dailyMax);
+      const capStar = cappedDaily < uncappedDaily ? '*' : '';
       return `<tr class="${isHl ? 'tc-table__hl' : ''}">
         <td>${pct}%${star}</td>
         <td>${mass.toFixed(2)} g</td>
@@ -571,16 +542,15 @@
         <td>${dailyTHC} mg</td>
         <td>${target.extractEquiv.toFixed(3)} g</td>
         <td>${target.week1Start.toFixed(3)} g</td>
-        <td>${(target.week1Start * sessions).toFixed(3)} g</td>
+        <td>${cappedDaily.toFixed(3)} g${capStar}</td>
       </tr>`;
     }).join('');
-    $('refCaption').innerHTML = `★ row closest to current input. Active product Pharmaceutical Strength = <b>${params.thcMgPerG} mg/g</b>.`;
+    $('refCaption').innerHTML = `★ row closest to current input. * value capped at 0.30 g/day max. Active product Pharmaceutical Strength = <b>${params.thcMgPerG} mg/g</b>.`;
   }
 
   function renderAll() {
-    if (activeCategory === 'experienced') renderExperienced();
-    else if (activeCategory === 'naive') renderNaive();
-    else renderBreakthrough();
+    if (activeCategory === 'breakthrough') renderBreakthrough();
+    else renderExperienced();
     renderSummary();
     renderReference();
   }

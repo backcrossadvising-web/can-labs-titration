@@ -7,9 +7,12 @@ export const DEFAULTS = Object.freeze({
   safetyFactor: 0.5,     // Week-1 conversion safety factor (≈50% prior THC)
   roundIncrement: 0.025, // Practical rounding increment for extract dose (g)
   minDose: 0.05,         // Practical minimum per-session extract dose (g)
+  dailyMax: 0.30,        // Hard daily ceiling (10 g / month Rx maximum)
 });
 
 const mround = (value, multiple) => Math.round(value / multiple) * multiple;
+const sessionsUnderCap = (perDose, dailyMax) =>
+  perDose <= 0 ? Infinity : Math.floor(dailyMax / perDose + 1e-9);
 
 export function computeConversion(inputs, params = DEFAULTS) {
   const { flowerPctTHC, massPerSession, sessionsPerDay } = inputs;
@@ -25,16 +28,15 @@ export function computeConversion(inputs, params = DEFAULTS) {
     mround(extractEquivPerSession * safetyFactor, roundIncrement),
   );
 
-  const week1Sessions =
+  const safetySessions =
     week1StartingDose * thcMgPerG === 0
       ? sessionsPerDay
-      : Math.max(
-          1,
-          Math.min(
-            sessionsPerDay,
-            Math.ceil((dailyLoadedTHC * safetyFactor) / (week1StartingDose * thcMgPerG)),
-          ),
-        );
+      : Math.ceil((dailyLoadedTHC * safetyFactor) / (week1StartingDose * thcMgPerG));
+
+  const capSessions = sessionsUnderCap(week1StartingDose, params.dailyMax);
+  const week1SessionsUncapped = Math.max(1, Math.min(sessionsPerDay, safetySessions));
+  const week1Sessions = Math.max(1, Math.min(week1SessionsUncapped, capSessions));
+  const week1DailyCapped = week1Sessions < week1SessionsUncapped;
 
   const week1DailyDose = week1StartingDose * week1Sessions;
   const week1DailyTHC = week1DailyDose * thcMgPerG;
@@ -49,6 +51,7 @@ export function computeConversion(inputs, params = DEFAULTS) {
     week1Sessions,
     week1DailyDose,
     week1DailyTHC,
+    week1DailyCapped,
     pctOfPriorTHC,
   };
 }
@@ -56,7 +59,7 @@ export function computeConversion(inputs, params = DEFAULTS) {
 export function experiencedSchedule(inputs, conversion, params = DEFAULTS) {
   const { sessionsPerDay } = inputs;
   const { extractEquivPerSession } = conversion;
-  const { roundIncrement, minDose } = params;
+  const { roundIncrement, minDose, dailyMax } = params;
 
   const week2PerDose = Math.max(minDose, mround(extractEquivPerSession * 0.75, roundIncrement));
   const week3PerDose = Math.max(minDose, mround(extractEquivPerSession, roundIncrement));
@@ -65,6 +68,13 @@ export function experiencedSchedule(inputs, conversion, params = DEFAULTS) {
   const pct = (dose, doses) =>
     dailyLoadedTHC === 0 ? 0 : (dose * doses * params.thcMgPerG) / dailyLoadedTHC;
 
+  const cap = (perDose, requested) => {
+    const allowed = Math.max(1, Math.min(requested, sessionsUnderCap(perDose, dailyMax)));
+    return { doses: allowed, capped: allowed < requested };
+  };
+  const w2 = cap(week2PerDose, sessionsPerDay);
+  const w3 = cap(week3PerDose, sessionsPerDay);
+
   return [
     {
       week: 'Week 1',
@@ -72,6 +82,7 @@ export function experiencedSchedule(inputs, conversion, params = DEFAULTS) {
       perDose: conversion.week1StartingDose,
       doses: conversion.week1Sessions,
       daily: conversion.week1DailyDose,
+      capped: !!conversion.week1DailyCapped,
       pct: conversion.pctOfPriorTHC,
       notes:
         'Per-session dose at practical minimum; sessions/day reduced so daily THC ≈ 50% of prior. Clinician check-in at end of week 1.',
@@ -80,18 +91,20 @@ export function experiencedSchedule(inputs, conversion, params = DEFAULTS) {
       week: 'Week 2',
       timing: 'Split doses',
       perDose: week2PerDose,
-      doses: sessionsPerDay,
-      daily: week2PerDose * sessionsPerDay,
-      pct: pct(week2PerDose, sessionsPerDay),
+      doses: w2.doses,
+      daily: week2PerDose * w2.doses,
+      capped: w2.capped,
+      pct: pct(week2PerDose, w2.doses),
       notes: 'Increase to ~75% of prior THC if tolerated.',
     },
     {
       week: 'Week 3 (full conversion)',
       timing: 'Split doses',
       perDose: week3PerDose,
-      doses: sessionsPerDay,
-      daily: week3PerDose * sessionsPerDay,
-      pct: pct(week3PerDose, sessionsPerDay),
+      doses: w3.doses,
+      daily: week3PerDose * w3.doses,
+      capped: w3.capped,
+      pct: pct(week3PerDose, w3.doses),
       notes: 'Match prior daily THC as closely as practical increments allow.',
     },
     {
@@ -100,6 +113,7 @@ export function experiencedSchedule(inputs, conversion, params = DEFAULTS) {
       perDose: null,
       doses: null,
       daily: null,
+      capped: false,
       pct: null,
       notes: 'Adjust per symptom control. Consolidate to BID or TDS as clinically appropriate.',
     },
@@ -160,12 +174,14 @@ export function breakthroughSchedule() {
 }
 
 export function referenceTable(flowerPctTHC, params = DEFAULTS) {
-  const { thcMgPerG, safetyFactor, roundIncrement, minDose } = params;
+  const { thcMgPerG, safetyFactor, roundIncrement, minDose, dailyMax } = params;
   const masses = [0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.40, 0.50, 0.75, 1.00];
   return masses.map((m) => {
     const loadedTHC = m * flowerPctTHC * 10;
     const extractEquiv = loadedTHC / thcMgPerG;
     const week1 = Math.max(minDose, mround(extractEquiv * safetyFactor, roundIncrement));
+    const uncappedDaily3x = week1 * 3;
+    const cappedDaily3x = Math.min(uncappedDaily3x, dailyMax);
     return {
       mass: m,
       loadedTHC,
@@ -173,7 +189,8 @@ export function referenceTable(flowerPctTHC, params = DEFAULTS) {
       dailyTHC3x: loadedTHC * 3,
       extractEquiv,
       week1Start: week1,
-      week1Daily3x: week1 * 3,
+      week1Daily3x: cappedDaily3x,
+      week1Daily3xCapped: cappedDaily3x < uncappedDaily3x,
     };
   });
 }
